@@ -1,0 +1,85 @@
+/* ตั้งค่าสีพื้นหลังและฟอนต์ */
+body {
+  background-color: #f0f2f5;  /* สีพื้นหลังอ่อนแบบ Facebook */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #1c1e21;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* กึ่งกลางแนวนอน */
+  align-items: center;     /* กึ่งกลางแนวตั้ง */
+  height: 100vh;           /* เต็มหน้าจอสูง */
+  flex-direction: column;
+}
+
+/* ตัวหัวเรื่องใหญ่ */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #1877f2; /* สีน้ำเงินแบบ Facebook */
+}
+
+/* จัดรูปแบบให้แต่ละบรรทัดเป็นกล่องแนวตั้ง */
+p {
+  margin: 15px 0;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ตั้งค่าป้ายชื่อ label ให้ดูชัดเจน */
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+/* รูปแบบช่อง input */
+input[type="text"],
+input[type="password"] {
+  padding: 12px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd0d5;
+  font-size: 1rem;
+  outline-color: #1877f2;
+  transition: border-color 0.3s ease;
+}
+
+/* เปลี่ยนสีขอบเมื่อโฟกัส */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #1877f2;
+}
+
+/* ปุ่มเข้าสู่ระบบ */
+button {
+  margin-top: 25px;
+  width: 320px;
+  padding: 14px 0;
+  background-color: #42b72a; /* สีเขียวสดใส */
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover ปุ่ม */
+button:hover {
+  background-color: #36a420;
+}
+
+/* ข้อความรหัสทดสอบ */
+p:last-of-type,
+p:nth-last-of-type(2) {
+  width: 320px;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 30px;
+  font-style: italic;
+  user-select: none; /* ไม่ให้ข้อความถูกเลือก */
+  text-align: center;
+}
