@@ -62,9 +62,10 @@ sessionStorage.setItem("isLoggedIn", "true");
 }
 function Logout(){
   
-  
+   sessionStorage.removeItem("isLoggedIn"); // ลบเฉพาะตัวแปรนี้
   window.location.href ="index.html"
 }
+
 
 
 
