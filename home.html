@@ -1,38 +1,73 @@
 <!DOCTYPE html>
-<html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ควบคุมอุปกรณ์ไฟฟ้าผ่าน MQTT</title>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-      <script src="test.js"></script>
-    <link rel="stylesheet" href="styles.css">
-<script>
-    // ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง
-    window.onload = function() {
-      const isLoggedIn = sessionStorage.getItem("isLoggedIn");
-      if (isLoggedIn !== "true") {
-        // ถ้าไม่ได้ล็อกอิน ให้กลับไปหน้า login
-        alert("กรุณาเข้าสู่ระบบก่อน!");
-        window.location.href = "index.html";
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32 Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1, h2 { color: #333; }
+    #sensorData { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    button { padding: 10px 20px; margin: 5px; border-radius: 4px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
+    button:hover { opacity: 0.85; }
+    #btnOn { background-color: #28a745; }
+    #btnOff { background-color: #dc3545; }
+  </style>
+</head>
+<body>
+  <h1>📡 ESP32 Dashboard</h1>
+
+  <!-- Sensor Data -->
+  <div id="sensorData">
+    <h2>Sensor Data:</h2>
+    <pre id="dataOutput">Loading...</pre>
+    <button onclick="fetchSensorData()">Refresh</button>
+  </div>
+
+  <!-- LED Control -->
+  <div class="command">
+    <h2>LED Control:</h2>
+    <button id="btnOn" onclick="sendCommand('ON')">ON</button>
+    <button id="btnOff" onclick="sendCommand('OFF')">OFF</button>
+  </div>
+
+  <script>
+    const API_BASE = "https://node-server-p56n.onrender.com/api"; // เปลี่ยนให้ตรงกับ server ของคุณ
+
+    // โหลด sensor data
+    async function fetchSensorData() {
+      try {
+        const res = await fetch(`${API_BASE}/sensor`);
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data = await res.json();
+        document.getElementById("dataOutput").textContent = data;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("dataOutput").textContent = "Error fetching data";
       }
-    };
+    }
+
+    // ส่งคำสั่ง ON/OFF
+    async function sendCommand(value) {
+      try {
+        const res = await fetch(`${API_BASE}/command`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ value }) // ส่งตรง ๆ
+        });
+        const result = await res.json();
+        alert("Command sent: " + result.value);
+      } catch (err) {
+        console.error(err);
+        alert("Error sending command");
+      }
+    }
+
+    // โหลดข้อมูลครั้งแรก
+    fetchSensorData();
+    // รีเฟรชทุก 5 วินาที
+    setInterval(fetchSensorData, 5000);
   </script>
-
-   <button class="logout" onclick="logout()">Logout</button>
-  </head>
-  <body>
-
-
-
-    <h2>💡 ควบคุมอุปกรณ์ไฟฟ้าผ่าน MQTT</h2>
-    <button class="on" onclick="turnOn()">เปิดไฟ</button>
-    <button class="off" onclick="turnOff()">ปิดไฟ</button>
-
-    <div id="status">สถานะ: ยังไม่เชื่อมต่อ</div>
-   <div class="location">🏭 ที่นิคมอุตสาหกรรม ลำพูน</div>
-    <div id="temp">อุณหภูมิ: -- °C</div>
-    <div id="humi">ความชื้น: -- %</div>
-   
-  </body>
+</body>
 </html>
