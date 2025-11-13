@@ -5,11 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ESP32 Dashboard</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
     h1, h2 { color: #333; }
-    #sensorData { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    button { padding: 10px 20px; margin: 5px; border-radius: 4px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
+    #sensorData {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .sensor-value {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .sensor-label {
+      color: #666;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 4px;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
     button:hover { opacity: 0.85; }
     #btnOn { background-color: #28a745; }
     #btnOff { background-color: #dc3545; }
@@ -20,14 +51,16 @@
 
   <!-- Sensor Data -->
   <div id="sensorData">
-    <h2>Sensor Data:</h2>
+    <h2>🌡 Sensor Data</h2>
+    <div><span class="sensor-label">Temperature:</span> <span id="temp" class="sensor-value">-- °C</span></div>
+    <div><span class="sensor-label">Humidity:</span> <span id="humi" class="sensor-value">-- %</span></div>
     <pre id="dataOutput">Loading...</pre>
     <button onclick="fetchSensorData()">Refresh</button>
   </div>
 
   <!-- LED Control -->
   <div class="command">
-    <h2>LED Control:</h2>
+    <h2>💡 LED Control:</h2>
     <button id="btnOn" onclick="sendCommand('ON')">ON</button>
     <button id="btnOff" onclick="sendCommand('OFF')">OFF</button>
   </div>
@@ -41,7 +74,14 @@
         const res = await fetch(`${API_BASE}/sensor`);
         if (!res.ok) throw new Error("Network response was not ok");
         const data = await res.json();
-        document.getElementById("dataOutput").textContent = data;
+
+        // แสดง temp / humidity ถ้ามีในข้อมูล
+        document.getElementById("temp").textContent = data.temperature ? `${data.temperature} °C` : "-- °C";
+        document.getElementById("humi").textContent = data.humidity ? `${data.humidity} %` : "-- %";
+
+        // แสดงข้อมูลดิบทั้งหมด
+        document.getElementById("dataOutput").textContent = JSON.stringify(data, null, 2);
+
       } catch (err) {
         console.error(err);
         document.getElementById("dataOutput").textContent = "Error fetching data";
@@ -54,7 +94,7 @@
         const res = await fetch(`${API_BASE}/command`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ value }) // ส่งตรง ๆ
+          body: JSON.stringify({ value })
         });
         const result = await res.json();
         alert("Command sent: " + result.value);
